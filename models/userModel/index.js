@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const { EMAIL, PASSWORD, USER_TYPE, ROOT_USER } = require('./const.js');
+const Permission = require('../permissionModel')
+const { PERMISSIONS, USER_ID, allPermissions } = require('../permissionModel/const.js');
+const { setPermission } = require('../../controllers/permissionController.js');
 
 const Schema = mongoose.Schema;
 
@@ -46,6 +49,10 @@ userSchema.statics.signup = async function (email, password) {
   const hash = await bcrypt.hash(password, salt);
 
   const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER });
+
+  // create permissions
+  await setPermission(user._id, allPermissions);
+  // await Permission.create({ [USER_ID]: user._id, [PERMISSIONS]: allPermissions })
 
   return user;
 }
