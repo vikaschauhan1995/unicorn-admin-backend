@@ -1,5 +1,5 @@
 const Permission = require('../models/permissionModel');
-const { USER_ID, PERMISSIONS } = require('../models/permissionModel/const.js');
+const { USER_ID, PERMISSIONS, allPermissions } = require('../models/permissionModel/const.js');
 
 const setPermission = async (user_id, permissions) => {
   try {
@@ -15,7 +15,12 @@ const getPermissions = async (user_id) => {
   return { _id: permissionObj?._id, [PERMISSIONS]: permissions };
 }
 
+const getAllPermissions = (req, res) => {
+  res.status(200).json(allPermissions);
+}
+
 module.exports = {
   setPermission,
-  getPermissions
+  getPermissions,
+  getAllPermissions
 }
