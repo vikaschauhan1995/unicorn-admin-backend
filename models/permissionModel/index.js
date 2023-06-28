@@ -10,7 +10,7 @@ const permissionSchema = new Schema({
     unique: true
   },
   [PERMISSIONS]: {
-    type: [String],
+    type: [{}],
     required: true,
   }
 });
