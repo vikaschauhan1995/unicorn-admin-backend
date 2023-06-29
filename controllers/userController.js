@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Permission = require('../models/permissionModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { getPermissions, setPermission } = require('./permissionController');
@@ -65,15 +66,27 @@ const createSubuser = async (req, res) => {
 
 const getSubusers = async (req, res) => {
   try {
-    const _id = req.params._id;
-    const userType = await findUserType(_id);
+    const user_id = req.params.user_id;
+    const userType = await findUserType(user_id);
     if (userType === "root") {
-      const subusers = await User.find({ [USER_TYPE]: "subuser" });
+      const subusers = await User.find({ [USER_TYPE]: "subuser" }).select(`-${PASSWORD}`);
       res.status(200).json(subusers);
     } else if (userType === "subuser") {
-      const subusers = await User.find({ [USER_TYPE]: "subuser" }).where({ "_id": { $ne: _id } });
+      const subusers = await User.find({ [USER_TYPE]: "subuser" }).where({ "_id": { $ne: user_id } }).select(`-${PASSWORD}`);
       res.status(200).json(subusers);
     }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+const deleteSubuser = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    // console.log("user_id: =>", user_id);
+    const user = await User.findOneAndDelete({ _id: user_id });
+    const permission = await Permission.findOneAndDelete({ user_id });
+    res.status(200).json({ user, permission });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -83,5 +96,6 @@ module.exports = {
   loginUser,
   signupUser,
   createSubuser,
-  getSubusers
+  getSubusers,
+  deleteSubuser
 }
