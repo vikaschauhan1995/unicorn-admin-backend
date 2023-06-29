@@ -8,13 +8,18 @@ const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: 60 * 60 });
 }
 
+const findUserType = async (_id) => {
+  const userType = await User.findOne({ _id }).select(`${USER_TYPE}`);
+  return userType?.[USER_TYPE];
+}
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
     const permissions = await getPermissions(user._id);
-    res.status(200).json({ email, token, permissions });
+    res.status(200).json({ email, token, permissions, _id: user._id });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -51,7 +56,24 @@ const createSubuser = async (req, res) => {
     await setPermission(user._id, permissions);
 
     // console.log("email, password, permissions=>", email, password, permissions);
-    res.status(200).json({});
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+
+const getSubusers = async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const userType = await findUserType(_id);
+    if (userType === "root") {
+      const subusers = await User.find({ [USER_TYPE]: "subuser" });
+      res.status(200).json(subusers);
+    } else if (userType === "subuser") {
+      const subusers = await User.find({ [USER_TYPE]: "subuser" }).where({ "_id": { $ne: _id } });
+      res.status(200).json(subusers);
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -60,5 +82,6 @@ const createSubuser = async (req, res) => {
 module.exports = {
   loginUser,
   signupUser,
-  createSubuser
+  createSubuser,
+  getSubusers
 }
