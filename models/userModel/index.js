@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 const { EMAIL, PASSWORD, USER_TYPE, ROOT_USER } = require('./const.js');
 const Permission = require('../permissionModel')
-const { PERMISSIONS, USER_ID, allPermissions } = require('../permissionModel/const.js');
+const { PERMISSIONS, PERMISSION, USER_ID, allPermissions } = require('../permissionModel/const.js');
 const { setPermission } = require('../../controllers/permissionController.js');
 
 const Schema = mongoose.Schema;
@@ -21,7 +21,8 @@ const userSchema = new Schema({
   [USER_TYPE]: {
     type: String,
     required: true
-  }
+  },
+  [PERMISSIONS]: [{ type: Schema.Types.ObjectId, ref: "Permission" }]
 });
 
 userSchema.statics.signup = async function (email, password) {
@@ -48,11 +49,10 @@ userSchema.statics.signup = async function (email, password) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER });
-
   // create permissions
-  await setPermission(user._id, allPermissions);
-  // await Permission.create({ [USER_ID]: user._id, [PERMISSIONS]: allPermissions })
+  const permissions = await setPermission(allPermissions);
+
+  const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER, [PERMISSIONS]: permissions._id });
 
   return user;
 }

@@ -1,5 +1,8 @@
+const PERMISSION = 'permission';
+
 const USER_ID = 'user_id';
 const PERMISSIONS = 'permissions';
+
 
 // permission keys
 const PERMISSION_OBJ_KEY_KEY = 'key';
@@ -12,15 +15,21 @@ const ORDERS_READ_PERMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'orders_read_permissi
 const SUB_USER_FULL_ACCESS = { [PERMISSION_OBJ_KEY_KEY]: 'sub_user_full_access', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'subuser', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Get full access of sub user' };
 const SUB_USER_READ_ACCESS = { [PERMISSION_OBJ_KEY_KEY]: 'sub_user_read_access', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'subuser', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Only see sub users' }
 
+const PRODUCT_FULL_PERMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'product_full_permission', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'product', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Get full access of product' };
+const PRODUCT_READ_PERMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'product_read_permission', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'product', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Only see products' };
+
 const allPermissions = [
   ORDERS_FULL_PERMISSION,
   ORDERS_READ_PERMISSION,
   SUB_USER_FULL_ACCESS,
-  SUB_USER_READ_ACCESS
+  SUB_USER_READ_ACCESS,
+  PRODUCT_FULL_PERMISSION,
+  PRODUCT_READ_PERMISSION
 ];
 
 module.exports = {
   PERMISSIONS,
   USER_ID,
-  allPermissions
+  allPermissions,
+  PERMISSION
 }

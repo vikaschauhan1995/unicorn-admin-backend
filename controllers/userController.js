@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { getPermissions, setPermission } = require('./permissionController');
 const { PASSWORD, USER_TYPE } = require('../models/userModel/const');
+const { PERMISSIONS, PERMISSION, allPermissions } = require('../models/permissionModel/const');
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: 60 * 60 });
@@ -19,7 +20,7 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
-    const permissions = await getPermissions(user._id);
+    const permissions = await getPermissions(user?.permissions[0]);
     res.status(200).json({ email, token, permissions, _id: user._id });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -30,9 +31,10 @@ const signupUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.signup(email, password);
+    // console.log('user._id=>', user._id);
     const token = createToken(user._id);
-    const permissions = await getPermissions(user._id);
-    res.status(200).json({ email, token, permissions });
+    const permissions = await getPermissions(user?.[PERMISSIONS]?.[0]);
+    res.status(200).json({ email, token, permissions, _id: user._id });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -51,10 +53,10 @@ const createSubuser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ email, [PASSWORD]: hash, [USER_TYPE]: user_type });
-
     // create permissions
-    await setPermission(user._id, permissions);
+    const permissions_ = await setPermission(permissions);
+
+    const user = await User.create({ email, [PASSWORD]: hash, [USER_TYPE]: user_type, [PERMISSIONS]: permissions_._id });
 
     // console.log("email, password, permissions=>", email, password, permissions);
     res.status(200).json(user);
@@ -69,7 +71,7 @@ const getSubusers = async (req, res) => {
     const user_id = req.params.user_id;
     const userType = await findUserType(user_id);
     if (userType === "root") {
-      const subusers = await User.find({ [USER_TYPE]: "subuser" }).select(`-${PASSWORD}`);
+      const subusers = await User.find({ [USER_TYPE]: "subuser" }).select(`-${PASSWORD}`).populate('permissions');
       res.status(200).json(subusers);
     } else if (userType === "subuser") {
       const subusers = await User.find({ [USER_TYPE]: "subuser" }).where({ "_id": { $ne: user_id } }).select(`-${PASSWORD}`);

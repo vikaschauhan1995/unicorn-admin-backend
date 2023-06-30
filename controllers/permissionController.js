@@ -1,16 +1,19 @@
 const Permission = require('../models/permissionModel');
 const { USER_ID, PERMISSIONS, allPermissions } = require('../models/permissionModel/const.js');
+const { USER } = require('../models/userModel/const');
 
-const setPermission = async (user_id, permissions) => {
+const setPermission = async (permissions) => {
   try {
-    await Permission.create({ [USER_ID]: user_id, [PERMISSIONS]: permissions })
+    const permissions_ = await Permission.create({ [PERMISSIONS]: permissions })
+    return permissions_;
   } catch (error) {
-    throw Error("Erorr while creating permission(s)");
+    throw Error(`Erorr while creating permission(s) :`);
   }
 }
 
-const getPermissions = async (user_id) => {
-  var permissionObj = await Permission.findOne({ [USER_ID]: user_id });
+const getPermissions = async (_id) => {
+  const permissionObj = await Permission.findOne({ _id: _id });
+  // console.log("_id, permissionObj", _id, permissionObj);
   const permissions = permissionObj?.[PERMISSIONS] ? permissionObj?.[PERMISSIONS] : [];
   return { _id: permissionObj?._id, [PERMISSIONS]: permissions };
 }
