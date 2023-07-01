@@ -1,5 +1,5 @@
 const Product = require('../models/productModel');
-const { PRODUCT_NAME, PRODUCT_SKU, PRODUCT_CREATED_BY_ID, PRODUCT_CREATED_BY_EMAIL } = require('../models/productModel/const.js')
+const { PRODUCT_NAME, PRODUCT_SKU, PRODUCT_CREATED_BY_ID, PRODUCT_CREATED_BY_EMAIL, PRODUCT_MODIFIED_LAST } = require('../models/productModel/const.js');
 
 
 const saveProduct = async (req, res) => {
@@ -13,4 +13,17 @@ const saveProduct = async (req, res) => {
   }
 }
 
-module.exports = saveProduct;
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find({}).sort({ [PRODUCT_MODIFIED_LAST]: -1 });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+
+module.exports = {
+  saveProduct,
+  getProducts
+};
