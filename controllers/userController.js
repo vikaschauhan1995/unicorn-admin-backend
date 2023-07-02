@@ -21,7 +21,7 @@ const loginUser = async (req, res) => {
     const user = await User.login(email, password);
     const token = createToken(user._id);
     const permissions = await getPermissions(user?.permissions[0]);
-    res.status(200).json({ email, token, permissions, _id: user._id });
+    res.status(200).json({ email, token, permissions, _id: user._id, [USER_TYPE]: user?.[USER_TYPE] });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -34,7 +34,7 @@ const signupUser = async (req, res) => {
     // console.log('user._id=>', user._id);
     const token = createToken(user._id);
     const permissions = await getPermissions(user?.[PERMISSIONS]?.[0]);
-    res.status(200).json({ email, token, permissions, _id: user._id });
+    res.status(200).json({ email, token, permissions, _id: user._id, [USER_TYPE]: user?.[USER_TYPE] });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -50,9 +50,9 @@ userSchema.statics.signup = async function (email, password) {
   const hash = await bcrypt.hash(password, salt);
 
   // create permissions
-  const permissions = await setPermission(allPermissions);
-
-  const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER, [PERMISSIONS]: permissions._id });
+  // const permissions = await setPermission(["root"]);
+  const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER });
+  // const user = await this.create({ email, password: hash, [USER_TYPE]: ROOT_USER, [PERMISSIONS]: permissions._id });
 
   return user;
 }
