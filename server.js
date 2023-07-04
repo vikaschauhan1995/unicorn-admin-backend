@@ -5,6 +5,7 @@ const cors = require('cors');
 const userRouter = require('./routes/user.js');
 const permissionRouter = require('./routes/permission.js');
 const productRouter = require('./routes/product.js');
+const orderRouter = require('./routes/order.js');
 
 // express app
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors({
 app.use('/api/user', userRouter);
 app.use('/api/permission', permissionRouter);
 app.use('/api/product', productRouter);
+app.use('/api/order', orderRouter);
 
 // connect to db
 mongoose.connect(process.env.MONGO_DB).then(() => {
