@@ -40,7 +40,9 @@ const orderSchema = new Schema({
     required: true
   },
   [ORDER_PRODUCTS]: {
-    type: [{ type: Schema.Types.ObjectId, req: 'Product' }],
+    // type: [{ type: Schema.Types.ObjectId, req: 'Product' }],
+    type: [{}],
+    // type: [{ quantity: Number }, { type: Schema.Types.ObjectId, ref: 'Product' }],
     required: true
   },
   [ORDER_CREATED_BY_ID]: {
