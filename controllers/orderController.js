@@ -29,7 +29,7 @@ const updateOrder = async (req, res) => {
     const newOrder = await Order.findOneAndUpdate({ _id }, {
       ...newOrderData,
     }, { new: true });
-    res.status(200).json({ error: newOrder });
+    res.status(200).json(newOrder);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
