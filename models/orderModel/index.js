@@ -6,13 +6,16 @@ const {
   ORDER_STATE,
   ORDER_PIN,
   ORDER_PRODUCTS,
+  ORDER_STATUS,
+  ORDER_STATUS_CREATED,
   ORDER_CREATED_BY_ID,
   ORDER_CREATED_BY_EMAIL,
   ORDER_ORIGIN,
   ORDER_CREATED_AT,
   ORDER_MODIFIED_LAST,
   CUSTOM_ORDER_GENERATE_KEY,
-  PROGRAM_ORDER_GENERATE_KEY
+  PROGRAM_ORDER_GENERATE_KEY,
+  orderStatuses
 } = require('./const');
 
 const Schema = mongoose.Schema;
@@ -44,6 +47,12 @@ const orderSchema = new Schema({
     type: [{}],
     // type: [{ quantity: Number }, { type: Schema.Types.ObjectId, ref: 'Product' }],
     required: true
+  },
+  [ORDER_STATUS]: {
+    type: String,
+    required: true,
+    default: ORDER_STATUS_CREATED,
+    enum: orderStatuses
   },
   [ORDER_CREATED_BY_ID]: {
     type: String,
