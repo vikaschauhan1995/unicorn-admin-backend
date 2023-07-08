@@ -71,7 +71,7 @@ const getSubusers = async (req, res) => {
     const user_id = req.params.user_id;
     const userType = await findUserType(user_id);
     if (userType === "root") {
-      const subusers = await User.find({ [USER_TYPE]: "subuser" }).select(`-${PASSWORD}`).populate('permissions');
+      const subusers = await User.find({ [USER_TYPE]: "subuser" }).select(`-${PASSWORD}`).populate('permissions').sort({ _id: -1 });
       res.status(200).json(subusers);
     } else if (userType === "subuser") {
       const subusers = await User.find({ [USER_TYPE]: "subuser" }).where({ "_id": { $ne: user_id } }).select(`-${PASSWORD}`);

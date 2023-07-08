@@ -3,6 +3,7 @@ const {
   PRODUCT_NAME,
   PRODUCT_SKU,
   PRODUCT_QUANTITY,
+  PRODUCT_PRICE,
   PRODUCT_IMAGES,
   PRODUCT_CREATED_BY_ID,
   PRODUCT_CREATED_BY_EMAIL,
@@ -27,6 +28,11 @@ const productSchema = new Schema({
   [PRODUCT_QUANTITY]: {
     type: Number,
     min: 0
+  },
+  [PRODUCT_PRICE]: {
+    type: Number,
+    required: true,
+    min: 1
   },
   [PRODUCT_IMAGES]: {
     type: [String],

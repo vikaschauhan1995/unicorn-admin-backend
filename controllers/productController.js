@@ -1,16 +1,16 @@
 const { default: mongoose } = require('mongoose');
 const Product = require('../models/productModel');
-const { PRODUCT_NAME, PRODUCT_SKU, PRODUCT_CREATED_BY_ID, PRODUCT_CREATED_BY_EMAIL, PRODUCT_MODIFIED_LAST, PRODUCT_QUANTITY } = require('../models/productModel/const.js');
+const { PRODUCT_NAME, PRODUCT_SKU, PRODUCT_CREATED_BY_ID, PRODUCT_CREATED_BY_EMAIL, PRODUCT_MODIFIED_LAST, PRODUCT_QUANTITY, PRODUCT_PRICE } = require('../models/productModel/const.js');
 
 
 const saveProduct = async (req, res) => {
   try {
-    const { name, sku, quantity, created_by_id, created_by_email } = req.body;
+    const { name, sku, quantity, price, created_by_id, created_by_email } = req.body;
     const oldProduct = await Product.findOne({ sku });
     if (oldProduct) {
       throw Error('Duplicate SKU');
     }
-    const product = await Product.create({ [PRODUCT_NAME]: name, [PRODUCT_SKU]: sku, [PRODUCT_QUANTITY]: quantity, [PRODUCT_CREATED_BY_ID]: created_by_id, [PRODUCT_CREATED_BY_EMAIL]: created_by_email });
+    const product = await Product.create({ [PRODUCT_NAME]: name, [PRODUCT_SKU]: sku, [PRODUCT_QUANTITY]: quantity, [PRODUCT_PRICE]: price, [PRODUCT_CREATED_BY_ID]: created_by_id, [PRODUCT_CREATED_BY_EMAIL]: created_by_email });
     // console.log("product=>", product);
     res.status(200).json(product);
   } catch (error) {
@@ -20,7 +20,7 @@ const saveProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { _id, name, sku, quantity } = req.body;
+    const { _id, name, sku, quantity, price } = req.body;
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res.status(404).json({ error: 'Invalid id' });
     }
@@ -32,7 +32,8 @@ const updateProduct = async (req, res) => {
       name,
       sku,
       [PRODUCT_MODIFIED_LAST]: new Date(),
-      quantity
+      quantity,
+      price
     };
     const newProduct = await Product.findOneAndUpdate({ _id }, {
       ...newProductData
