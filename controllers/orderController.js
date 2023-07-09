@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Order = require('../models/orderModel');
-const { ORDER_CREATED_BY_ID, ORDER_CREATED_BY_EMAIL, ORDER_ORIGIN, ORDER_MODIFIED_LAST } = require('../models/orderModel/const');
+const { ORDER_CREATED_BY_ID, ORDER_CREATED_BY_EMAIL, ORDER_ORIGIN, ORDER_MODIFIED_LAST, ORDER_PRODUCTS, ORDER_STATUS, ORDER_STATUS_DISPATCHED, ORDER_STATUS_CREATED } = require('../models/orderModel/const');
+const { updateProduct_sQuantity } = require('./productController');
 
 const saveOrder = async (req, res) => {
   try {
@@ -53,7 +54,7 @@ const deleteOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).sort({ [ORDER_MODIFIED_LAST]: -1 });
+    const orders = await Order.find({ [ORDER_STATUS]: ORDER_STATUS_CREATED }).sort({ [ORDER_MODIFIED_LAST]: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -76,10 +77,23 @@ const getOrder = async (req, res) => {
   }
 }
 
+const proceedOrder = async (req, res) => {
+  try {
+    const order = req.body;
+    const updatedProducts = await updateProduct_sQuantity(order?.[ORDER_PRODUCTS]);
+    const updatedOrder = await Order.findOneAndUpdate({ _id: order?._id }, { [ORDER_STATUS]: ORDER_STATUS_DISPATCHED }, { new: true });
+    // const updatedOrder = await Order.findOneAndUpdate({ _id: order?._id }, { [ORDER_STATUS]: ORDER_STATUS_CREATED });
+    res.status(200).json({ updatedOrder, updatedProducts });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
   saveOrder,
   updateOrder,
   deleteOrder,
   getOrders,
-  getOrder
+  getOrder,
+  proceedOrder
 };

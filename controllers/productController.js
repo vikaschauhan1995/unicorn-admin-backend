@@ -44,6 +44,29 @@ const updateProduct = async (req, res) => {
   }
 }
 
+const updateProduct_sQuantity = async (products) => {
+  if (!(products?.length > 0)) {
+    throw Error("There is no product to be executed");
+  }
+  const product_ids = [];
+  products.forEach((product) => {
+    product_ids.push(product?._id);
+  });
+  // ! actual products are products which is being fetched from the database
+  const actualProducts = await Product.find({ _id: { $in: product_ids } });
+  actualProducts.forEach(product => {
+    if (product?.[PRODUCT_QUANTITY] <= 0) {
+      throw Error(`${product?.[PRODUCT_NAME]} does not have sufficient quantity`);
+    }
+  });
+  let updatedActualProducts = [];
+  products.forEach(async (product) => {
+    const newProduct = await Product.findOneAndUpdate({ _id: product?._id }, { $inc: { [PRODUCT_QUANTITY]: -product?.[PRODUCT_QUANTITY] } }, { new: true });
+    updatedActualProducts.push(newProduct);
+  });
+  return actualProducts;
+}
+
 const deleteProduct = async (req, res) => {
   const _id = req.params._id;
   if (!mongoose.Types.ObjectId.isValid(_id)) {
@@ -74,5 +97,6 @@ module.exports = {
   saveProduct,
   getProducts,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  updateProduct_sQuantity
 };
