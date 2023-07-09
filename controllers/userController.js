@@ -87,7 +87,7 @@ const deleteSubuser = async (req, res) => {
     const user_id = req.params.user_id;
     // console.log("user_id: =>", user_id);
     const user = await User.findOneAndDelete({ _id: user_id });
-    const permission = await Permission.findOneAndDelete({ user_id });
+    const permission = await Permission.findOneAndDelete({ _id: user?.[PERMISSIONS]?.[0] });
     res.status(200).json({ user, permission });
   } catch (error) {
     res.status(400).json({ error: error.message });
