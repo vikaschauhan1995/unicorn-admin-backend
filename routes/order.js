@@ -4,12 +4,14 @@ const { saveOrder,
   deleteOrder,
   getOrders,
   getOrder,
-  proceedOrder
+  proceedOrder,
+  getAllDeliveredOrders
 } = require('../controllers/orderController');
 
 const router = express.Router();
 
 
+router.get('/delivered', getAllDeliveredOrders);
 router.post('/', saveOrder);
 router.get('/', getOrders);
 router.patch('/', updateOrder);

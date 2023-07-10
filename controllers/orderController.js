@@ -89,11 +89,22 @@ const proceedOrder = async (req, res) => {
   }
 }
 
+const getAllDeliveredOrders = async (req, res) => {
+  try {
+    console.log("getAllDeliveredOrders=> called");
+    const orders = await Order.find({ [ORDER_STATUS]: ORDER_STATUS_DISPATCHED }).sort({ [ORDER_MODIFIED_LAST]: -1 });
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
   saveOrder,
   updateOrder,
   deleteOrder,
   getOrders,
   getOrder,
-  proceedOrder
+  proceedOrder,
+  getAllDeliveredOrders
 };

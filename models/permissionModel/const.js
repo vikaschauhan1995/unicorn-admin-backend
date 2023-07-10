@@ -24,6 +24,8 @@ const PRODUCT_READ_PERMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'product_read_permis
 const INVENTORY_FULL_PERMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'inventory_full_permission', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'inventory', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Get full access of inventory' };
 const INVENTORY_READ_PRMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'inventory_read_permission', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'inventory', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Only see inventory' };
 
+const ORDER_DELIVERED_READ_PRMISSION = { [PERMISSION_OBJ_KEY_KEY]: 'order_delivered_read_permission', [PERMISSION_OBJ_COMPONENT_TO_BE_ACTIVE_KEY]: 'delivered_orders', [PERMISSION_OBJ_DESCRIPTION_KEY]: 'Only see delivered orders' };
+
 
 const allPermissions = [
   ORDERS_FULL_PERMISSION,
@@ -35,7 +37,8 @@ const allPermissions = [
   INVENTORY_FULL_PERMISSION,
   INVENTORY_READ_PRMISSION,
   ORDER_FULL_PERMISSION,
-  ORDER_READ_PERMISSION
+  ORDER_READ_PERMISSION,
+  ORDER_DELIVERED_READ_PRMISSION
 ];
 
 module.exports = {
