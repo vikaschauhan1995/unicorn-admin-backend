@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: `${process.env.FRONT_END_URL}`
+  origin: [`${process.env.FRONT_END_URL}`, `${process.env.USER_FRONT_END_URL}`]
 }));
 
 // routes
